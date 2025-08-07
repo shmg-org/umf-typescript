@@ -8,6 +8,10 @@
   "scripts": {
     "build": "tsdown"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shmg-org/umf-typescript.git"
+  },
   "devDependencies": {
     "@types/bun": "^1.2.19",
     "tsdown": "^0.13.3",
