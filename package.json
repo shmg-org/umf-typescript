@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "name": "@shmg/umf",
+  "description": "The Universal Metadata Format",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsdown"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.19",
+    "tsdown": "^0.13.3",
+    "typescript": "^5.9.2"
+  },
+  "license": "MIT"
+}
