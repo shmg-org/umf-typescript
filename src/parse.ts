@@ -24,15 +24,18 @@ export default function parse(input: string): Metadata {
         throw new UMFError('Empty Header Name', i + 1, line)
       }
     } else if (line.includes(':')) {
-      const [name, ...valueParts] = line.split(':')
-      const value = valueParts.join(':').trim()
-      const trimmedName = name!.trim()
+      const separatorIndex = line.indexOf(':')
+      const name = line.substring(0, separatorIndex).trim()
+      const value = line.substring(separatorIndex + 1).trim()
 
-      if (!trimmedName) {
-        throw new UMFError('Invalid Field Name', i + 1, line)
+      if (!name) {
+        throw new UMFError('Empty Field Name', i + 1, line)
+      }
+      if (!value) {
+        throw new UMFError('Empty Field Value', i + 1, line)
       }
 
-      metadata.set(header, trimmedName, value)
+      metadata.set(header, name, value)
     } else {
       throw new UMFError('Invalid Line', i + 1, line)
     }
