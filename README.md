@@ -20,6 +20,8 @@ console.log(metadata.get('Github', 'Author'))
 
 ## Installation
 
+The package is available on [npm](https://www.npmjs.com/package/@shmg/umf). You can install it using npm or your desired package manager:
+
 ```bash
 npm install @shmg/umf
 ```
