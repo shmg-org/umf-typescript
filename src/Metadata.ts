@@ -19,12 +19,15 @@ export default class Metadata {
   get(header: string | null, name: string): string | undefined {
     if (header) {
       const group = this.groups.get(header)
+
       if (group) {
         const value = group.get(name)
+
         if (value !== undefined) {
           return value
         }
       }
+
       return this.global.get(name)
     }
     return this.global.get(name)
@@ -36,21 +39,23 @@ export default class Metadata {
       this.global.set(name, value)
     } else {
       let group = this.groups.get(header)
+
       if (!group) {
         group = new Map()
-        this.groups.set(header, group)
+        this.groups.set(header, new Map())
       }
+
       group.set(name, value)
     }
   }
 
   // Get string representation.
   toString(): string {
-    const lines: string[] = []
-    lines.push(this.media_name)
+    const lines: string[] = [this.media_name]
     
     if (this.global.size > 0) {
       lines.push('')
+
       for (const [name, value] of this.global) {
         lines.push(`${name}: ${value}`)
       }
@@ -61,9 +66,8 @@ export default class Metadata {
     }
 
     for (const [header, group] of this.groups) {
-      lines.push('')
-      lines.push(`[ ${header} ]`)
-      lines.push('')
+      lines.push(`\n[ ${header} ]\n`)
+
       for (const [name, value] of group) {
         lines.push(`${name}: ${value}`)
       }
