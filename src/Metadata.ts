@@ -1,5 +1,5 @@
 // The metadata.
-export default class Metadata {
+export default class Metadata<T extends Record<PropertyKey, any> = Record<string, string | undefined>> {
   public media_name: string
   public global: Map<string, string>
   public groups: Map<string, Map<string, string>>
@@ -11,33 +11,33 @@ export default class Metadata {
   }
 
   // Check if a field exists.
-  public has(header: string | null, name: string): boolean {
+  public has(header: string | null, name: keyof T): boolean {
     return this.get(header, name) !== undefined
   }
 
   // Get a field.
-  public get(header: string | null, name: string): string | undefined {
+  public get(header: string | null, name: keyof T): string | undefined {
     if (header) {
       const group = this.groups.get(header)
 
       if (group) {
-        const value = group.get(name)
+        const value = group.get(name as string)
 
         if (value !== undefined) {
           return value
         }
       }
 
-      return this.global.get(name)
+      return this.global.get(name as string)
     }
 
-    return this.global.get(name)
+    return this.global.get(name as string)
   }
 
   // Set a field.
-  public set(header: string | null, name: string, value: string): void {
+  public set(header: string | null, name: keyof T, value: string): void {
     if (header === null) {
-      this.global.set(name, value)
+      this.global.set(name as string, value)
     } else {
       let group = this.groups.get(header)
 
@@ -46,7 +46,7 @@ export default class Metadata {
         this.groups.set(header, group)
       }
 
-      group.set(name, value)
+      group.set(name as string, value)
     }
   }
 
