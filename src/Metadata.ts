@@ -43,7 +43,7 @@ export default class Metadata {
 
       if (!group) {
         group = new Map()
-        this.groups.set(header, new Map())
+        this.groups.set(header, group)
       }
 
       group.set(name, value)
