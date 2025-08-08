@@ -5,21 +5,78 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., v1.0.0)'
+        required: true
+        type: string
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm i -g npm@latest
-      - run: npm --version
-      - run: npm i
-      - run: npm run build
-      - run: npm publish --provenance
+          registry-url: 'https://registry.npmjs.org'
+          
+      - name: Install npm
+        run: npm i -g npm@latest
+        
+      - name: Check npm version
+        run: npm --version
+        
+      - name: Install dependencies
+        run: npm i
+        
+      - name: Update package version
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          # Remove 'v' prefix if present
+          VERSION="${{ github.event.inputs.version }}"
+          VERSION="${VERSION#v}"
+          
+          # Update package.json version
+          npm version $VERSION --no-git-tag-version
+          
+      - name: Commit and push version change
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json
+          git commit -m "feat: bump version to ${{ github.event.inputs.version }}"
+          git push
+          
+      - name: Create and push tag
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          # Ensure version starts with 'v'
+          if [[ ! $VERSION =~ ^v ]]; then
+            VERSION="v$VERSION"
+          fi
+          git tag $VERSION
+          git push origin $VERSION
+          
+      - name: Create GitHub Release
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: Release ${{ github.event.inputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build package
+        run: npm run build
+        
+      - name: Publish to npm
+        run: npm publish --provenance
