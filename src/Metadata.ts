@@ -11,12 +11,12 @@ export default class Metadata {
   }
 
   // Check if a field exists.
-  has(header: string | null, name: string): boolean {
+  public has(header: string | null, name: string): boolean {
     return this.get(header, name) !== undefined
   }
 
   // Get a field.
-  get(header: string | null, name: string): string | undefined {
+  public get(header: string | null, name: string): string | undefined {
     if (header) {
       const group = this.groups.get(header)
 
@@ -30,11 +30,12 @@ export default class Metadata {
 
       return this.global.get(name)
     }
+
     return this.global.get(name)
   }
 
   // Set a field.
-  set(header: string | null, name: string, value: string): void {
+  public set(header: string | null, name: string, value: string): void {
     if (header === null) {
       this.global.set(name, value)
     } else {
@@ -50,7 +51,7 @@ export default class Metadata {
   }
 
   // Get string representation.
-  toString(): string {
+  public toString(): string {
     const lines: string[] = [this.media_name]
     
     if (this.global.size > 0) {
