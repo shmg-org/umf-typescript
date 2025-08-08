@@ -49,12 +49,11 @@ jobs:
           
       - name: Commit and push version change
         if: github.event_name == 'workflow_dispatch'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add package.json
-          git commit -m "feat: bump version to ${{ github.event.inputs.version }}"
-          git push
+        uses: iarekylew00t/verified-bot-commit@v1
+        with:
+          message: "feat: bump version to ${{ github.event.inputs.version }}"
+          files: |
+            package.json
           
       - name: Create and push tag
         if: github.event_name == 'workflow_dispatch'
