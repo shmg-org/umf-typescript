@@ -53,7 +53,7 @@ export default class Metadata {
   // Get string representation.
   public toString(): string {
     const lines: string[] = [this.media_name]
-    
+
     if (this.global.size > 0) {
       lines.push('')
 
